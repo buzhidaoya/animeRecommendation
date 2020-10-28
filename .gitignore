@@ -1,4 +1,6 @@
 /__pycache__
+/anime_data
+/data
 /venv
 /.idea
 *.txt

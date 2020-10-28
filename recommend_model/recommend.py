@@ -44,7 +44,7 @@ model = get_model_3(max_work, max_user)
 history = model.fit([get_array(train["anime_uid"]), get_array(train["profile"])], get_array(train["score"]), epochs=10,
                     validation_split=0.2, verbose=0)
 
-# model.save("connie_model3")
+model.save("connie_model3")
 # model.save("connie_model3.h5")
 
 predictions = model.predict([get_array(test["anime_uid"]), get_array(test["profile"])])

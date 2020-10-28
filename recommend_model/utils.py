@@ -13,28 +13,36 @@ from collections import defaultdict
 def get_mapping(series):
     occurrences = defaultdict(int)
     for element in series:
-        occurrences[element] += 1
-    mapping = {}
+        occurrences[element] += 1   # <unique items in series, 该item出现的次数>
+    mapping = {}    # 给occurences里的那些keys做个编号
     i = 0
     for element in occurrences:
         i += 1
-        mapping[element] = i
+        mapping[element] = i    # 这里的element就是occurences里的key，即unique items in series
+        # print("-------------------- element in mapping --------------------------")
+        # print(element)
 
-    return mapping
+    return mapping  # 给series里的unique items编个号：<unique item : 编号>
 
 
 def get_data():
     data = pd.read_csv("../anime_data/reviews.csv")
 
     mapping_work = get_mapping(data["anime_uid"])
+    # print("*************** mapping_work *******************")
     # print(mapping_work)
 
     data["anime_uid"] = data["anime_uid"].map(mapping_work)
+    # print("*************** data[anime_uid] *****************")
     # print(data["anime_uid"])
 
     mapping_users = get_mapping(data["profile"])
+    # print("*************** mapping_users *******************")
+    # print(mapping_users)
 
     data["profile"] = data["profile"].map(mapping_users)
+    # print("*************** data[profile] *****************")
+    # print(data["profile"])
 
     percentile_80 = np.percentile(data["uid"], 80)
 
