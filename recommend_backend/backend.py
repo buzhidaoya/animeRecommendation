@@ -21,6 +21,7 @@ def Sort_Tuple(tup):
 @cross_origin()
 def recommendation(username):
     all_anime_uids = pd.read_csv("../data/ratings.csv")["movieId"]  
+    all_movies = pd.read_csv("../data/movies.csv")  
     # print(all_anime_uids)
     print(all_anime_uids.shape)
     all_anime_uids_int = [] # ListA
@@ -55,7 +56,14 @@ def recommendation(username):
     while i < 10:
         movieId_top10.append(movieId_rating[i][0])
         i = i + 1
-    return jsonify(movieIds=movieId_top10)
+    i = 0
+    movieIdName_top10 = []
+    while i < 10:
+        movieId = movieId_top10[i]
+        movie_name = all_movies.loc[all_movies['movieId'] == movieId].drop_duplicates(subset = ['movieId'])['title'].values[0]
+        movieIdName_top10.append([movieId, movie_name])
+        i = i + 1
+    return jsonify(movieIds=movieIdName_top10)
     
 
 

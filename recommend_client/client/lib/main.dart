@@ -51,6 +51,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   String _result = '';
+  String _username = '';
 
   void _incrementCounter() {
     setState(() {
@@ -63,23 +64,24 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
   void _getRecommendation() async {
-    // Future<http.Response> createAlbum(String title) {
-    final http.Response response = await http.post(
-      'http://127.0.0.1:5000/recommendation/1',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'title': 'title',
-      }),
-    );
-    // print(response);
-    if (response.statusCode == 200) {
-      var result = json.decode(response.body);  // parse result into Map<String, dynamic>
-      print(result);
-      _result = result.toString();
-      
-    }
+      final http.Response response = await http.post(
+        'http://127.0.0.1:5000/recommendation/' + _username,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'title': 'title',
+        }),
+      );
+      // print(response);
+      if (response.statusCode == 200) {
+        var result = json.decode(response.body);  // parse result into Map<String, dynamic>
+        print(result);
+        setState(() {
+          _result = result.toString();
+        });
+      }
+ 
   }
 
   @override
@@ -126,32 +128,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 'Please Input Your Username: ',
               ),
             ),
-            // Text(
-            //   'Please Input Your Username: ',
-            // ),
-            // Text(
-            //   '$_counter',
-            //   style: Theme.of(context).textTheme.headline4,
-            // ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 200.0),
               child: TextField(
               // obscureText: true,
+              onChanged: (text) {
+                _username = text;
+              },
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 // labelText: 'UserName',
               ),
             ),
             ),
-            // TextField(
-            //   // obscureText: true,
-            //   decoration: InputDecoration(
-            //     border: OutlineInputBorder(
-                  
-            //     ),
-            //     // labelText: 'UserName',
-            //   ),
-            // ),
+            
             Container(
               padding: const EdgeInsets.all(20.0),
               child: RaisedButton(
@@ -170,12 +160,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
-      //   child: Icon(Icons.add),
-      // ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
