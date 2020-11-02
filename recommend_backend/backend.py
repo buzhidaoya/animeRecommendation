@@ -3,10 +3,13 @@ import pandas as pd
 import numpy as np
 from tensorflow import keras
 from flask import jsonify
+from flask_cors import CORS, cross_origin
 
 from recommend_model.utils import get_model_3, get_array, get_data
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 def Sort_Tuple(tup):   
     # reverse = None (Sorts in Ascending order)  
@@ -14,7 +17,8 @@ def Sort_Tuple(tup):
     # sublist lambda has been used  
     return(sorted(tup, key = lambda x: x[1]))
 
-@app.route('/recommendation/<username>')
+@app.route('/recommendation/<username>', methods=['GET', 'POST'])
+@cross_origin()
 def recommendation(username):
     all_anime_uids = pd.read_csv("../data/ratings.csv")["movieId"]  
     # print(all_anime_uids)
