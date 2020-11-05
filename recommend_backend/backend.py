@@ -22,6 +22,8 @@ def Sort_Tuple(tup):
 def recommendation(username):
     all_anime_uids = pd.read_csv("../data/ratings.csv")["movieId"]  
     all_movies = pd.read_csv("../data/movies.csv")  
+    all_links = pd.read_csv("../data/links.csv", dtype=str)
+    all_links["movieId"] = pd.to_numeric(all_links["movieId"])
     # print(all_anime_uids)
     print(all_anime_uids.shape)
     all_anime_uids_int = [] # ListA
@@ -61,7 +63,9 @@ def recommendation(username):
     while i < 10:
         movieId = movieId_top10[i]
         movie_name = all_movies.loc[all_movies['movieId'] == movieId].drop_duplicates(subset = ['movieId'])['title'].values[0]
-        movieIdName_top10.append([movieId, movie_name])
+        imdbId = all_links.loc[all_links['movieId'] == movieId].drop_duplicates(subset = ['movieId'])['imdbId'].values[0]
+        url = "https://www.imdb.com/title/tt" + str(imdbId) + " "
+        movieIdName_top10.append([movieId, movie_name, url])
         i = i + 1
     return jsonify(movieIds=movieIdName_top10)
     

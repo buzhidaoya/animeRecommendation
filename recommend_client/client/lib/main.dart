@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' show json;
 import 'dart:convert' show jsonEncode;
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -152,11 +155,22 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.green,
               ),
             ),
-            
-            Text(
-              '$_result',
-              style: Theme.of(context).textTheme.headline4,
+            Linkify(
+              onOpen: (link) async {
+                if (await canLaunch(link.url)) {
+                    await launch(link.url);
+                  } else {
+                    throw 'Could not launch $link';
+                  }
+              },
+              text: "$_result",
+              // style: TextStyle(color: Colors.yellow),
+              // linkStyle: TextStyle(color: Colors.red),
             ),
+            // Text(
+            //   '$_result',
+            //   style: Theme.of(context).textTheme.headline4,
+            // ),
           ],
         ),
       ),
