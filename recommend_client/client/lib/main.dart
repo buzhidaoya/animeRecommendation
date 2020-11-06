@@ -26,9 +26,11 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.green,
+        primaryColor: Color(0xff4D8669),
       ),
-      home: MyHomePage(title: 'Movie Recommendation System'),
+      home: MyHomePage(
+        title: 'MOVIE RECOMMENDATION SYSTEM', 
+        ),
     );
   }
 }
@@ -52,20 +54,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  // int _counter = 0;
   String _result = '';
   String _username = '';
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  // void _incrementCounter() {
+  //   setState(() {
+  //     // This call to setState tells the Flutter framework that something has
+  //     // changed in this State, which causes it to rerun the build method below
+  //     // so that the display can reflect the updated values. If we changed
+  //     // _counter without calling setState(), then the build method would not be
+  //     // called again, and so nothing would appear to happen.
+  //     _counter++;
+  //   });
+  // }
   void _getRecommendation() async {
       final http.Response response = await http.post(
         'http://127.0.0.1:5000/recommendation/' + _username,
@@ -128,7 +130,8 @@ class _MyHomePageState extends State<MyHomePage> {
             Container(
               padding: const EdgeInsets.all(20.0),
               child: Text(
-                'Please Input Your Username: ',
+                'PLEASE INPUT YOUR USERNAME: ',
+                style: TextStyle(color: Colors.grey, fontSize: 12),
               ),
             ),
             Container(
@@ -147,12 +150,17 @@ class _MyHomePageState extends State<MyHomePage> {
             
             Container(
               padding: const EdgeInsets.all(20.0),
+              width: 300.0,
+              height: 80.0,
               child: RaisedButton(
-                child: Text('Submit', style: TextStyle(fontSize: 20)),
+                child: Text('SUBMIT', style: TextStyle(color: Colors.white, fontSize: 14)),
                 onPressed: () {
                   _getRecommendation();
                 },
-                color: Colors.green,
+                color: Color(0xff4D8669),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
               ),
             ),
             Linkify(
@@ -164,8 +172,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
               },
               text: "$_result",
-              // style: TextStyle(color: Colors.yellow),
-              // linkStyle: TextStyle(color: Colors.red),
+              style: TextStyle(color: Color(0xff4A5C50)),
+              linkStyle: TextStyle(color: Color(0xffBBBBAD)),
             ),
             // Text(
             //   '$_result',
