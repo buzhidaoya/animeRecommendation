@@ -4,6 +4,8 @@ import numpy as np
 from tensorflow import keras
 from flask import jsonify
 from flask_cors import CORS, cross_origin
+import requests # 发送http requests
+from bs4 import BeautifulSoup   # 解析html
 
 from recommend_model.utils import get_model_3, get_array, get_data
 
@@ -59,13 +61,19 @@ def recommendation(username):
         movieId_top10.append(movieId_rating[i][0])
         i = i + 1
     i = 0
-    movieIdName_top10 = []
+    movieIdName_top10 = {}
     while i < 10:
         movieId = movieId_top10[i]
         movie_name = all_movies.loc[all_movies['movieId'] == movieId].drop_duplicates(subset = ['movieId'])['title'].values[0]
         imdbId = all_links.loc[all_links['movieId'] == movieId].drop_duplicates(subset = ['movieId'])['imdbId'].values[0]
-        url = "https://www.imdb.com/title/tt" + str(imdbId) + " "
-        movieIdName_top10.append([movieId, movie_name, url])
+        url = "https://www.imdb.com/title/tt" + str(imdbId)
+        page = requests.get(url)
+        # print(page.content)
+        s = BeautifulSoup(page.content, "html.parser")
+        p = s.find_all("div", class_="poster")
+        # print(p)
+        img = p[0].find_all("img")
+        movieIdName_top10[i] = [movieId, movie_name, url + " ", img[0]["src"] + " "]
         i = i + 1
     return jsonify(movieIds=movieIdName_top10)
     

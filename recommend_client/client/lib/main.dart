@@ -56,6 +56,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String _result = '';
   String _username = '';
+  var _coverURLs = ["", "", "", "", "", "", "", "", "", "", "", ""];
 
   void _getRecommendation() async {
       final http.Response response = await http.post(
@@ -73,6 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
         print(result);
         setState(() {
           _result = result.toString();
+          var j = json.decode(_result);
+          print(j);
+          print(j["movieIds"]);
         });
       }
  
@@ -164,6 +168,16 @@ class _MyHomePageState extends State<MyHomePage> {
               style: TextStyle(color: Color(0xff4A5C50)),
               linkStyle: TextStyle(color: Color(0xffBBBBAD)),
             ),
+            Image.network(_coverURLs[0]),
+            Image.network(_coverURLs[1]),
+            Image.network(_coverURLs[2]),
+            Image.network(_coverURLs[3]),
+            Image.network(_coverURLs[4]),
+            Image.network(_coverURLs[5]),
+            Image.network(_coverURLs[6]),
+            Image.network(_coverURLs[7]),
+            Image.network(_coverURLs[8]),
+            Image.network(_coverURLs[9]),
             // Text(
             //   '$_result',
             //   style: Theme.of(context).textTheme.headline4,
