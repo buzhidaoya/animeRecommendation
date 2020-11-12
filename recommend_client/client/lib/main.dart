@@ -57,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _result = '';
   String _username = '';
   var _coverURLs = ["", "", "", "", "", "", "", "", "", "", "", ""];
+  var _URLs = ["", "", "", "", "", "", "", "", "", "", "", ""];
 
   void _getRecommendation() async {
       final http.Response response = await http.post(
@@ -71,12 +72,43 @@ class _MyHomePageState extends State<MyHomePage> {
       // print(response);
       if (response.statusCode == 200) {
         var result = json.decode(response.body);  // parse result into Map<String, dynamic>
-        print(result);
+        // print(result);
         setState(() {
           _result = result.toString();
-          var j = json.decode(_result);
-          print(j);
-          print(j["movieIds"]);
+          // print(json.decode('{a:"a"}'));
+          // var j = json.decode(_result);
+          // var j = json.decode(_result);
+          // print(j);
+          // print(j["movieIds"]);
+          print(result["movieIds"]);
+          // for (final k in result["movieIds"]){
+          //   final value = result["movieIds"][k];
+          //   print(value);
+          // }
+          final movie0 = result["movieIds"]['0'];
+          print(movie0);
+          print("*****************************************");
+          print(movie0[3]);
+          _coverURLs[0] = result["movieIds"]['0'][3];
+          _coverURLs[1] = result["movieIds"]['1'][3];
+          _coverURLs[2] = result["movieIds"]['2'][3];
+          _coverURLs[3] = result["movieIds"]['3'][3];
+          _coverURLs[4] = result["movieIds"]['4'][3];
+          _coverURLs[5] = result["movieIds"]['5'][3];
+          _coverURLs[6] = result["movieIds"]['6'][3];
+          _coverURLs[7] = result["movieIds"]['7'][3];
+          _coverURLs[8] = result["movieIds"]['8'][3];
+          _coverURLs[9] = result["movieIds"]['9'][3];
+          _URLs[0] = result["movieIds"]['0'][2];
+          _URLs[1] = result["movieIds"]['1'][2];
+          _URLs[2] = result["movieIds"]['2'][2];
+          _URLs[3] = result["movieIds"]['3'][2];
+          _URLs[4] = result["movieIds"]['4'][2];
+          _URLs[5] = result["movieIds"]['5'][2];
+          _URLs[6] = result["movieIds"]['6'][2];
+          _URLs[7] = result["movieIds"]['7'][2];
+          _URLs[8] = result["movieIds"]['8'][2];
+          _URLs[9] = result["movieIds"]['9'][2];
         });
       }
  
@@ -96,7 +128,9 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
+      body: SingleChildScrollView(
+        child: 
+        Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         // 要加的：
@@ -156,34 +190,96 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            Linkify(
-              onOpen: (link) async {
-                if (await canLaunch(link.url)) {
-                    await launch(link.url);
-                  } else {
-                    throw 'Could not launch $link';
-                  }
+            // Linkify(
+            //   onOpen: (link) async {
+            //     if (await canLaunch(link.url)) {
+            //         await launch(link.url);
+            //       } else {
+            //         throw 'Could not launch $link';
+            //       }
+            //   },
+            //   text: "$_result",
+            //   style: TextStyle(color: Color(0xff4A5C50)),
+            //   linkStyle: TextStyle(color: Color(0xffBBBBAD)),
+            // ),
+
+            GestureDetector(
+              onTap: () { 
+                  print("Tapped a Container"); 
+                  launch(_URLs[0]);
               },
-              text: "$_result",
-              style: TextStyle(color: Color(0xff4A5C50)),
-              linkStyle: TextStyle(color: Color(0xffBBBBAD)),
+              child: Image.network(_coverURLs[0]),
             ),
-            Image.network(_coverURLs[0]),
-            Image.network(_coverURLs[1]),
-            Image.network(_coverURLs[2]),
-            Image.network(_coverURLs[3]),
-            Image.network(_coverURLs[4]),
-            Image.network(_coverURLs[5]),
-            Image.network(_coverURLs[6]),
-            Image.network(_coverURLs[7]),
-            Image.network(_coverURLs[8]),
-            Image.network(_coverURLs[9]),
+            GestureDetector(
+              onTap: () { 
+                  print("Tapped a Container"); 
+                  launch(_URLs[1]);
+              },
+              child: Image.network(_coverURLs[1]),
+            ),
+            GestureDetector(
+              onTap: () { 
+                  print("Tapped a Container"); 
+                  launch(_URLs[2]);
+              },
+              child: Image.network(_coverURLs[2]),
+            ),
+            GestureDetector(
+              onTap: () { 
+                  print("Tapped a Container"); 
+                  launch(_URLs[3]);
+              },
+              child: Image.network(_coverURLs[3]),
+            ),
+            GestureDetector(
+              onTap: () { 
+                  print("Tapped a Container"); 
+                  launch(_URLs[4]);
+              },
+              child: Image.network(_coverURLs[4]),
+            ),
+            GestureDetector(
+              onTap: () { 
+                  print("Tapped a Container"); 
+                  launch(_URLs[5]);
+              },
+              child: Image.network(_coverURLs[5]),
+            ),
+            GestureDetector(
+              onTap: () { 
+                  print("Tapped a Container"); 
+                  launch(_URLs[6]);
+              },
+              child: Image.network(_coverURLs[6]),
+            ),
+            GestureDetector(
+              onTap: () { 
+                  print("Tapped a Container"); 
+                  launch(_URLs[7]);
+              },
+              child: Image.network(_coverURLs[7]),
+            ),
+            GestureDetector(
+              onTap: () { 
+                  print("Tapped a Container"); 
+                  launch(_URLs[8]);
+              },
+              child: Image.network(_coverURLs[8]),
+            ),
+            GestureDetector(
+              onTap: () { 
+                  print("Tapped a Container"); 
+                  launch(_URLs[9]);
+              },
+              child: Image.network(_coverURLs[9]),
+            ),
             // Text(
             //   '$_result',
             //   style: Theme.of(context).textTheme.headline4,
             // ),
           ],
         ),
+      ),
       ),
     );
   }

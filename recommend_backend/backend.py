@@ -6,6 +6,7 @@ from flask import jsonify
 from flask_cors import CORS, cross_origin
 import requests # 发送http requests
 from bs4 import BeautifulSoup   # 解析html
+import json
 
 from recommend_model.utils import get_model_3, get_array, get_data
 
@@ -75,8 +76,10 @@ def recommendation(username):
         img = p[0].find_all("img")
         movieIdName_top10[i] = [movieId, movie_name, url + " ", img[0]["src"] + " "]
         i = i + 1
+    print(jsonify(movieIds=movieIdName_top10))
+    print(json.dumps({"movieIds":movieIdName_top10}))
+    # return json.dumps({"movieIds":movieIdName_top10})
     return jsonify(movieIds=movieIdName_top10)
-    
 
 
 @app.route('/')
