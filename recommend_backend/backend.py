@@ -7,12 +7,41 @@ from flask_cors import CORS, cross_origin
 import requests # 发送http requests
 from bs4 import BeautifulSoup   # 解析html
 import json
+import datetime
 
-from recommend_model.utils import get_model_3, get_array, get_data
+# from recommend_model.utils import get_model_3, get_array, get_data
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+
+print("********************** At first: ")
+print(datetime.datetime.now())
+all_anime_uids = pd.read_csv("../../data/ratings.csv")["movieId"]  
+all_movies = pd.read_csv("../../data/movies.csv")  
+all_links = pd.read_csv("../../data/links.csv", dtype=str)
+all_links["movieId"] = pd.to_numeric(all_links["movieId"])
+print("********************** Before Loading model: ")
+print(datetime.datetime.now())
+reload_model = keras.models.load_model("../recommend_model/connie_newmodel")
+print("********************** Finshed Loading model: ")
+print(datetime.datetime.now())
+df = pd.read_csv("../../data/ratings.csv")
+movie_df = pd.read_csv("../../data/movies.csv")
+print("********************** Finshed reading data: ")
+print(datetime.datetime.now())
+
+user_ids = df["userId"].unique().tolist()
+user2user_encoded = {x: i for i, x in enumerate(user_ids)}
+userencoded2user = {i: x for i, x in enumerate(user_ids)}
+movie_ids = df["movieId"].unique().tolist()
+movie2movie_encoded = {x: i for i, x in enumerate(movie_ids)}
+movie_encoded2movie = {i: x for i, x in enumerate(movie_ids)}
+df["user"] = df["userId"].map(user2user_encoded)
+df["movie"] = df["movieId"].map(movie2movie_encoded)
+print("********************** Finished encoding users and movies as integer indices: ")
+print(datetime.datetime.now())
+
 
 def Sort_Tuple(tup):   
     # reverse = None (Sorts in Ascending order)  
@@ -23,10 +52,11 @@ def Sort_Tuple(tup):
 @app.route('/recommendation/<username>', methods=['GET', 'POST'])
 @cross_origin()
 def recommendation(username):
-    all_anime_uids = pd.read_csv("../data/ratings.csv")["movieId"]  
-    all_movies = pd.read_csv("../data/movies.csv")  
-    all_links = pd.read_csv("../data/links.csv", dtype=str)
-    all_links["movieId"] = pd.to_numeric(all_links["movieId"])
+    # all_anime_uids = pd.read_csv("../../data/ratings.csv")["movieId"]  
+    # all_movies = pd.read_csv("../../data/movies.csv")  
+    # all_links = pd.read_csv("../../data/links.csv", dtype=str)
+    # all_links["movieId"] = pd.to_numeric(all_links["movieId"])
+
     # print(all_anime_uids)
     print(all_anime_uids.shape)
     all_anime_uids_int = [] # ListA
@@ -42,23 +72,26 @@ def recommendation(username):
     # print(usernames)
     # print(len(usernames))
     size = 100
-    reload_model = keras.models.load_model("../recommend_model/connie_newmodel")
+    # reload_model = keras.models.load_model("../recommend_model/connie_newmodel")
 
-    df = pd.read_csv("../data/ratings.csv")
-    movie_df = pd.read_csv("../data/movies.csv")
+    # df = pd.read_csv("../../data/ratings.csv")
+    # movie_df = pd.read_csv("../../data/movies.csv")
 
-    user_ids = df["userId"].unique().tolist()
-    user2user_encoded = {x: i for i, x in enumerate(user_ids)}
-    userencoded2user = {i: x for i, x in enumerate(user_ids)}
-    movie_ids = df["movieId"].unique().tolist()
-    movie2movie_encoded = {x: i for i, x in enumerate(movie_ids)}
-    movie_encoded2movie = {i: x for i, x in enumerate(movie_ids)}
-    df["user"] = df["userId"].map(user2user_encoded)
-    df["movie"] = df["movieId"].map(movie2movie_encoded)
+    # user_ids = df["userId"].unique().tolist()
+    # user2user_encoded = {x: i for i, x in enumerate(user_ids)}
+    # userencoded2user = {i: x for i, x in enumerate(user_ids)}
+    # movie_ids = df["movieId"].unique().tolist()
+    # movie2movie_encoded = {x: i for i, x in enumerate(movie_ids)}
+    # movie_encoded2movie = {i: x for i, x in enumerate(movie_ids)}
+    # df["user"] = df["userId"].map(user2user_encoded)
+    # df["movie"] = df["movieId"].map(movie2movie_encoded)
 
     # Let us get a user and see the top recommendations.
     user_id = df.userId.sample(1).iloc[0]
-    # user_id = username
+    print("**********************TYPE***********************")
+    print(type(user_id))
+    user_id = np.int64(int(username))
+
     movies_watched_by_user = df[df.userId == user_id]
     movies_not_watched = movie_df[
         ~movie_df["movieId"].isin(movies_watched_by_user.movieId.values)
@@ -71,8 +104,14 @@ def recommendation(username):
     user_movie_array = np.hstack(
         ([[user_encoder]] * len(movies_not_watched), movies_not_watched)
     )
+    print("********************** Start to predict: ")
+    print(datetime.datetime.now())
     ratings = reload_model.predict(user_movie_array).flatten()
+    print("********************** Finished predicting: ")
+    print(datetime.datetime.now())
     top_ratings_indices = ratings.argsort()[-10:][::-1]
+    print("********************** Finshed Sorting: ")
+    print(datetime.datetime.now())
     recommended_movie_ids = [
         movie_encoded2movie.get(movies_not_watched[x][0]) for x in top_ratings_indices
     ]
@@ -117,12 +156,20 @@ def recommendation(username):
     # while i < 10:
     #     movieId_top10.append(movieId_rating[i][0])
     #     i = i + 1
+    print("********************** Start to Show Top 10: ")
+    print(datetime.datetime.now())
     i = 0
     movieIdName_top10 = {}
     while i < 10:
         movieId = movieId_top10[i]
+        print("********************** Start to search movie name in All movies: ")
+        print(datetime.datetime.now())
         movie_name = all_movies.loc[all_movies['movieId'] == movieId].drop_duplicates(subset = ['movieId'])['title'].values[0]
+        print("********************** Finished searching movie name in All movies: ")
+        print(datetime.datetime.now())
         imdbId = all_links.loc[all_links['movieId'] == movieId].drop_duplicates(subset = ['movieId'])['imdbId'].values[0]
+        print("********************** Finished getting imdbID links in All links: ")
+        print(datetime.datetime.now())
         url = "https://www.imdb.com/title/tt" + str(imdbId)
         page = requests.get(url)
         # print(page.content)
@@ -132,7 +179,8 @@ def recommendation(username):
         img = p[0].find_all("img")
         movieIdName_top10[i] = [movieId, movie_name, url + " ", img[0]["src"] + " "]
         i = i + 1
-    
+    print("********************** Finished Showing Top 10: ")
+    print(datetime.datetime.now())
     return jsonify(movieIds=movieIdName_top10)
     # return jsonify(recommended_movies)
 

@@ -1,7 +1,19 @@
-/__pycache__
-/anime_data
-/data
-/venv
-/.idea
+__pycache__
+mapping_work.pkl
+recommend_backend/__pycache__
+recommend_backend/__init__.py
+recommend_client/client/.idea
+recommend_client/client/.gitignore
+recommend_model/__pycache__
+recommend_model/__init__.py
+# recommend_model/connie_model3
+# recommend_model/utils.py
+# recommend_model/recommend.py
+# recommend_model/plot_movies.py
+# recommend_model/mapping_work.pkl
+anime_data
+data
+venv
+.idea
 *.txt
 example-*
