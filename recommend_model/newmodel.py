@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 # First, load the data and apply preprocessing
 
-df = pd.read_csv("../data/ratings.csv")
+df = pd.read_csv("../../data/ratings.csv")
 
 # Need to perform some preprocessing to encode users and movies as integer indices.
 
